@@ -1,0 +1,178 @@
+# Welcome!
+
+This is a GemThread Server. It is designed to allow conversations to be held in Gemini-space.
+
+# Quick Links
+
+=> {{.ServerURL}}/threads See the threads on this server, sorted in order of the thread with the most recent response first.
+=> {{.ServerURL}}/threads/new Add a new thread
+=> {{.ServerURL}}/search Search for threads and responses from a specific site
+
+# Using the GemThread Server
+
+## How do I see all the threads?
+
+Use the URL:
+
+```
+=> {{.ServerURL}}/threads
+```
+
+The "/threads" URL accepts four different query parameters:
+
+* count: how many thread summaries to return. The default is 100.
+* start: what offset to start from when returning thread summaries. The default is 0.
+* sort: how to sort the threads. To sort by the date of the most recent response (the default), use "update". To sort by the date that the thread was created on this GemThread server, use "create".
+* order: how to order the threads. To see the most recently updated or created threads first (the default), use "desc". To see the oldest threads first, use "asc".
+
+Examples:
+
+=> {{.ServerURL}}/threads See the threads on this server, sorted in order of the thread with the most recent response first.
+```
+{{.ServerURL}}/threads
+```
+
+=> {{.ServerURL}}/threads?start=0&count=10 See the ten threads with the most recent responses.
+```
+{{.ServerURL}}/threads?start=0&count=10
+```
+
+=> {{.ServerURL}}/threads?sort=create&order=asc See the threads on this server, sorted in order of creation, oldest first. 
+```
+{{.ServerURL}}/threads?sort=create&order=asc
+```
+
+=> {{.ServerURL}}/threads?start=10&count=5 See five threads with the most recent responses, starting at thread 10.
+```
+{{.ServerURL}}/threads?start=10&count=5
+```
+
+## How do I create a new thread?
+
+First, write your post and publish it on your own Gemini server.
+
+Next, copy the address of your post, and add it to this GemThread server using the URL below:
+
+=> {{.ServerURL}}/threads/new Add a new thread
+
+This GemThread server will fetch your post, parse it to figure out the title and a summary, and add it as a new thread.
+
+If there are "GemThread." fields in the post (see below), this GemThread server will use them instead.
+
+Threads can be programmatically added to the GemThread server by calling the "new" endpoint with a URL-encoded target:
+
+```
+{{.ServerURL}}/threads/new?gemini%3A%2F%2Fhost.name%2Flink%2Fto%2Fpost
+```
+
+## How do I add my response to an existing thread?
+
+First, write your response and publish it on your own Gemini server.
+
+Next, copy the address of your response, and add it to this GemThread server by clicking the "Add a response to this thread" link at the bottom of the thread to which you want to add your response.
+
+## When viewing a thread, how can I sort the responses in the thread so that I see the newest first? Or the oldest first?
+
+Use the "order" query parameter:
+
+```
+=> {{.ServerURL}}/threads/<THREAD_ID>?order=descending
+=> {{.ServerURL}}/threads/<THREAD_ID>?order=ascending
+```
+
+## How can I search for pages from my site?
+
+To search for pages that might be from your site (or any site), you can pass the relevant portion of the site's URL to the "/search" endpoint, in the form:
+
+```
+=> {{.ServerURL}}/search?<URL_ENCODED_URL_PATH>
+```
+
+=> {{.ServerURL}}/search Search for your site's pages
+
+For example, to find all pages from the site "example.com", click on the search link above and enter "example.com" into the input box.
+
+## My page has been added to the server, but I want to change the author, or the title, or the summary. How can I do this?
+
+You can add the GemThread fields described below (in "GemThread Fields") to your page, then call the update URL:
+
+```
+=> {{.ServerURL}}/messages/<MESSAGE_ID>/update?<URL_ENCODED_URL>
+```
+
+The update URL will cause the server to refetch your page, and then use the information in the page to update the summary, author, and title for the page.
+
+To find your page's <MESSAGE_ID> and the correct update URL, use the "/search" endpoint described above. In the returned list of messages, there will be an "Refetch and update this page" link that you can click.
+
+## How do I remove my page from this server?
+
+You can add the "GemThread.Prohibit" field described below (in "GemThread Fields") to your page, then call the update URL:
+
+```
+=> {{.ServerURL}}/messages/<MESSAGE_ID>/update?<URL_ENCODED_URL>
+```
+
+The update URL will cause the server to refetch your page. When the server finds the line that begins with "GemThread.Prohibit", it will delete all instances of your page from the database.
+
+To find your page's <MESSAGE_ID> and the correct update URL, use the "/search" endpoint described above. In the returned list of messages, there will be an "Refetch and update this page" link that you can click.
+
+# GemThread Fields
+
+GemThread fields are optional fields that are intended to allow the page's author to have control over what is displayed on the GemThread server.
+
+When parsing a page, the GemThread server will check each retrieved page for GemThread fields.
+
+If the GemThread server does not find any GemThread fields, it will use reasonable defaults to construct the title and summary text and determine the author.
+
+A GemThread field has the form "GemThread.FieldName". The separator can be a period, underscore, colon, or hyphen. The fieldname is case-insensitive. This means that any of the following forms will work:
+
+```
+gemthread-fieldname
+GemThread.FieldName
+GEMTHREAD_FIELDNAME
+GEMTHREAD:fieldname
+```
+
+GemThread field lines must not begin with whitespace. The first character on the line must be the 'g' (or 'G') of the word "GemThread".
+
+There are four available GemThread fields:
+
+## GemThread.Prohibit
+
+Adding a line of the form "GemThread.Prohibit" will cause the server to refuse to create a thread or add a response for that page.
+
+If the page is already registered on the server, adding this field and then using the update URL (discussed above) to refetch the page will cause the page to be removed from the server. 
+
+If your page was added as a response to a thread, it will be deleted from the thread.
+
+If your page started a thread, it will be removed from the thread but the other responses in the thread will still exist.
+
+## Gemthread.Author: author name
+
+If this field exists, it will be used as the author name in the thread's message listing. This field must be of the form:
+```
+GemThread.Author: Author's Name Here
+```
+The trailing colon (at the end of "GemThread.Author:") is required. 
+
+Whitespace will be trimmed from the beginning and end of the author's name, but must not exist either before the "GemThread.Author:" portion of the line or between the "GemThread.Author" field name and the trailing colon.
+
+## Gemthread.Summary: summary line
+
+If this field exists, it will be used as the summary text, overriding the server's default, which is to use the first non-header line in the page. This field must be of the form:
+```
+GemThread.Summary: summary line for the thread or the response
+```
+
+## Gemthread.Title: title line
+
+If this field exists, it will be used as the title, overriding the server's default, which is to use the first header line in the page. This field must be of the form:
+```
+GemThread.Title: thread or response title
+```
+
+---
+
+GemThread.Author: Raph M.
+GemThread.Title: GemThread Server Information
+GemThread.Summary: A GemThread server is a way for conversations to be held in Gemini-space.
