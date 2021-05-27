@@ -37,7 +37,7 @@ gemthread -c /path/to/gemthread.cfg
 ## Questions? Comments? Anecdotes?
 
 * Log an issue (always welcome); or
-* Send email to the [gemthread mailing list](https://lists.sr.ht/~raphm/gemthread): mailto://~raphm/gemthread@lists.sr.ht
+* Send email to the [gemthread mailing list](https://lists.sr.ht/~raphm/gemthread): [mailto://~raphm/gemthread@lists.sr.ht](mailto://~raphm/gemthread@lists.sr.ht)
 
 ## Mirrors
 
