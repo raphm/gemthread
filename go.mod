@@ -1,4 +1,4 @@
-module scgi
+module git.sr.ht/~raphm/gemthread
 
 go 1.16
 

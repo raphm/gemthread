@@ -53,7 +53,7 @@ func main() {
 	_server_url = ""
 	_database_path = "gemthread.db"
 	_help_path = "help.gmi"
-	_socket_path = "scgi.sock"
+	_socket_path = "gemthread.sock"
 
 	config_data, err := ioutil.ReadFile(_config_path)
 	if err != nil {
