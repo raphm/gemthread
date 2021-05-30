@@ -39,9 +39,17 @@ gemthread -c /path/to/gemthread.cfg
 * Log an issue (always welcome); or
 * Send email to the [gemthread mailing list](https://lists.sr.ht/~raphm/gemthread): [mailto://~raphm/gemthread@lists.sr.ht](mailto://~raphm/gemthread@lists.sr.ht)
 
+The primary issue tracker is located at:
+
+* https://todo.sr.ht/~raphm/gemthread  
+
+I am happy to take issues on GitHub as well:
+
+* https://github.com/raphm/gemthread/issues
+
 ## Mirrors
 
-This repository is hosted at:
+Code is hosted at:
 
 * https://git.sr.ht/~raphm/gemthread
 
